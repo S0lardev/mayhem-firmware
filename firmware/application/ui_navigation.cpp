@@ -74,6 +74,9 @@
 #include "file_path.hpp"
 #include "ff.h"
 
+# personal
+#include "ui_tower_search.hpp"
+
 #include "i2cdev_max17055.hpp"
 
 #include <locale>
@@ -122,6 +125,7 @@ const NavigationView::AppList NavigationView::appList = {
     {"freqman", "Freq. Manager", UTILITIES, Color::green(), &bitmap_icon_freqman, new ViewFactory<FrequencyManagerView>()},
     {"iqtrim", "IQ Trim", UTILITIES, Color::orange(), &bitmap_icon_trim, new ViewFactory<IQTrimView>()},
     {"notepad", "Notepad", UTILITIES, Color::dark_cyan(), &bitmap_icon_notepad, new ViewFactory<TextEditorView>()},
+    {"tower", "Tower", RX, Color::red(), &bitmap_icon_remote, new ViewFactory<TowerSearchView>()},
     {nullptr, "Debug", UTILITIES, Color::light_grey(), &bitmap_icon_debug, new ViewFactory<DebugMenuView>()},
     //{"testapp", "Test App", UTILITIES, Color::dark_grey(), nullptr, new ViewFactory<TestView>()},
     // Dangerous apps.
