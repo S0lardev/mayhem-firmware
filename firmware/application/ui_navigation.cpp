@@ -74,7 +74,7 @@
 #include "file_path.hpp"
 #include "ff.h"
 
-# personal
+// personal
 #include "ui_tower_search.hpp"
 
 #include "i2cdev_max17055.hpp"
@@ -126,7 +126,7 @@ const NavigationView::AppList NavigationView::appList = {
     {"iqtrim", "IQ Trim", UTILITIES, Color::orange(), &bitmap_icon_trim, new ViewFactory<IQTrimView>()},
     {"notepad", "Notepad", UTILITIES, Color::dark_cyan(), &bitmap_icon_notepad, new ViewFactory<TextEditorView>()},
     {"tower", "Tower", RX, Color::red(), &bitmap_icon_remote, new ViewFactory<TowerSearchView>()},
-    {nullptr, "Debug", UTILITIES, Color::light_grey(), &bitmap_icon_debug, new ViewFactory<DebugMenuView>()},
+    {nullptr, "Debug", UTILITIES, Color::light_grey(), &bitmap_icon_burger, new ViewFactory<DebugMenuView>()},
     //{"testapp", "Test App", UTILITIES, Color::dark_grey(), nullptr, new ViewFactory<TestView>()},
     // Dangerous apps.
     {nullptr, "Flash Utility", UTILITIES, Color::red(), &bitmap_icon_peripherals_details, new ViewFactory<FlashUtilityView>()},
