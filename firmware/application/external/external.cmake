@@ -429,6 +429,9 @@ set(EXTCPPSRC
 	#wmbus
 	external/wmbus_rx/main.cpp
 	external/wmbus_rx/ui_wmbus_rx.cpp
+	# tower_search
+	external/tower_search/main.cpp
+	external/tower_search/tower_search.cpp
 )
 
 set(EXTAPPLIST
@@ -521,6 +524,7 @@ set(EXTAPPLIST
 	two_tone_rx
 	hard_reset
 	secplustx
+<<<<<<< HEAD
     signal_hunter
     signal_hunter
 	tetra_rx
@@ -533,5 +537,8 @@ set(EXTAPPLIST
 	sdusb
   	rds_rx
 	wmbus_rx
+=======
+	tower_search
+>>>>>>> d5a343cf (updated app to make it external and added proper includes)
 )
 
