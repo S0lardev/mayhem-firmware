@@ -165,6 +165,9 @@ class Message {
         VorRxConfigure = 107,
         VorRxStatusData = 108,
         VorTxConfigure = 109,
+        TowerSearchNRData = 110,
+        TowerSearchLTEData = 111,
+        TowerSearchUMTSData = 112,
         MAX
     };
 
@@ -1983,5 +1986,57 @@ class FlexTosendMessage : public Message {
     uint8_t msglen = 0;
     uint8_t msg[240] = {0};
 };
+
+class TowerSearchNRDataMessage : public Message {
+   public:
+    constexpr TowerSearchNRDataMessage(
+        uint32_t freq = 0,
+        uint32_t bw = 0,
+        uint8_t modulation = 0)
+        : Message{ID::TowerSearchNRData},
+          freq{freq},
+          bw{bw},
+          modulation{modulation} {
+    }
+
+    uint32_t freq = 0;
+    uint32_t bw = 0;
+    uint8_t modulation = 0;
+};
+
+class TowerSearchLTEDataMessage : public Message {
+   public:
+    constexpr TowerSearchLTEDataMessage(
+        uint32_t freq = 0,
+        uint32_t bw = 0,
+        uint8_t modulation = 0)
+        : Message{ID::TowerSearchLTEData},
+          freq{freq},
+          bw{bw},
+          modulation{modulation} {
+    }
+
+    uint32_t freq = 0;
+    uint32_t bw = 0;
+    uint8_t modulation = 0;
+};
+
+class TowerSearchUMTSDataMessage : public Message {
+   public:
+    constexpr TowerSearchUMTSDataMessage(
+        uint32_t freq = 0,
+        uint32_t bw = 0,
+        uint8_t modulation = 0)
+        : Message{ID::TowerSearchUMTSData},
+          freq{freq},
+          bw{bw},
+          modulation{modulation} {
+    }
+
+    uint32_t freq = 0;
+    uint32_t bw = 0;
+    uint8_t modulation = 0;
+};
+
 
 #endif /*__MESSAGE_H__*/
