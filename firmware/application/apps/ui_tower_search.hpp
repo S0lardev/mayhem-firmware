@@ -6,6 +6,50 @@
 
 namespace ui
 {
+
+    struct TowerSearchRecentEntry {
+    using Key = uint64_t;
+    static constexpr Key invalid_key = 0x0fffffff;
+    uint8_t rat = FPS_Invalid;
+    uint16_t bits = 0;
+    uint16_t age = 0;  // updated on each seconds, show how long the signal was last seen
+    uint64_t data = 0;
+    TowerSearchRecentEntry() {}
+    TowerSearchRecentEntry(
+        uint8_t sensorType,
+        uint64_t data = 0,
+        uint16_t bits = 0)
+        : sensorType{sensorType},
+          bits{bits},
+          data{data} {
+    }
+    Key key() const {
+        return (data ^ ((static_cast<uint64_t>(sensorType) & 0xFF) << 0));
+    }
+    void inc_age(int delta) {
+        if (UINT16_MAX - delta > age) age += delta;
+    }
+    void reset_age() {
+        age = 0;
+    }
+
+    std::string to_csv();
+};
+
+    class nrTowerLog {
+   public:
+    Optional<File::Error> append(const std::filesystem::path& filename) {
+        return log_file.append(filename);
+    }
+
+    void log_data(SubGhzDRecentEntry& data);
+    void write_header() {
+        log_file.write_entry(";Type; Bits; Data;");
+    }
+
+   private:
+    LogFile log_file{};
+};
     class TowerSearchView : public View                                // App class declaration
     {
     public:
@@ -17,10 +61,8 @@ namespace ui
     private:
         void start_scan_thread();
         void stop_scan_thread();
-        void nr_scan_thread();
-        void lte_scan_thread();
-        void umts_scan_thread();
-        
+        void on_data(const SubGhzDDataMessage* data);
+
         void update();                                            // Function declaration
         MessageHandlerRegistration message_handler_update{        // Example, not required: MessageHandlerRegistration class
             Message::ID::DisplayFrameSync,                        // relays messages to your app code from baseband. Every time you 
@@ -55,5 +97,30 @@ namespace ui
 
     ui::AudioVolumeField field_volume{
         {UI_POS_WIDTH_REMAINING(2), UI_POS_Y(0)}};
+
+        
     };
+    Button start_scan{
+        {0, 16, 7 * 8, 32},
+        "Start"};
+
+    Checkbox check_nr{
+        {10 * 8, 18},
+        3,
+        "5g",
+        true};
+
+    Checkbox check_lte{
+        {10 * 8, 18 + 8},
+        3,
+        "4g",
+        true};
+
+    Checkbox check_umts{
+        {10 * 8, 18 + 16},
+        3,
+        "3g",
+        true};
+
+    
 } 

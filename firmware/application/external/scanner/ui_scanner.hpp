@@ -122,17 +122,7 @@ class ScannerView : public View {
     int32_t squelch{-30};
     scanner_range_t frequency_range{0, MAX_UFREQ};
     std::string freqman_file{default_freqman_file};
-    app_settings::SettingsManager settings_{
-        "rx_scanner"sv,
-        app_settings::Mode::RX,
-        {
-            {"browse_wait"sv, &browse_wait},
-            {"lock_wait"sv, &lock_wait},
-            {"scanner_squelch"sv, &squelch},
-            {"range_min"sv, &frequency_range.min},
-            {"range_max"sv, &frequency_range.max},
-            {"file"sv, &freqman_file},
-        }};
+     
 
     NavigationView& nav_;
 
