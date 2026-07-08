@@ -113,6 +113,7 @@ MEMORY
     ram_external_app_secplustx             (rwx) : org = 0xAE080000, len = 32k
     ram_external_app_vor_rx                (rwx) : org = 0xAE090000, len = 32k
     ram_external_app_vor_tx                (rwx) : org = 0xAE0A0000, len = 32k
+    ram_external_app_tower_search          (rwx) : org = 0xAE0B0000, len = 32k"
 }
 
 SECTIONS
@@ -656,4 +657,10 @@ SECTIONS
         KEEP(*(.external_app.app_secplustx.application_information));
         *(*ui*external_app*secplustx*);
     } > ram_external_app_secplustx
+    
+    .external_app_tower_search : ALIGN(4) SUBALIGN(4)
+    {
+        KEEP(*(.external_app.app_tower_search.application_information));
+        *(*ui*external_app*tower_search*);
+    } > ram_external_app_tower_search
 }

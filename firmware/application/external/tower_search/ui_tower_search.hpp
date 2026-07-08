@@ -4,13 +4,16 @@
 #include "ui_receiver.hpp"
 #include "string_format.hpp"
 
+//log
+#include "log_file.hpp"
+
 namespace ui
 {
-
+    // TODO: replace with a proper class in ui_receiver.hpp
     struct TowerSearchRecentEntry {
     using Key = uint64_t;
     static constexpr Key invalid_key = 0x0fffffff;
-    uint8_t rat = FPS_Invalid;
+    uint8_t rat = LTE;  // 0=NR, 1=LTE, 2=UMTS
     uint16_t bits = 0;
     uint16_t age = 0;  // updated on each seconds, show how long the signal was last seen
     uint64_t data = 0;
@@ -18,14 +21,8 @@ namespace ui
     TowerSearchRecentEntry(
         uint8_t sensorType,
         uint64_t data = 0,
-        uint16_t bits = 0)
-        : sensorType{sensorType},
-          bits{bits},
-          data{data} {
-    }
-    Key key() const {
-        return (data ^ ((static_cast<uint64_t>(sensorType) & 0xFF) << 0));
-    }
+        uint16_t bits = 0);
+        
     void inc_age(int delta) {
         if (UINT16_MAX - delta > age) age += delta;
     }
@@ -42,12 +39,13 @@ namespace ui
         return log_file.append(filename);
     }
 
-    void log_data(SubGhzDRecentEntry& data);
+    void log_data(TowerSearchRecentEntry& data);
     void write_header() {
         log_file.write_entry(";Type; Bits; Data;");
     }
 
    private:
+
     LogFile log_file{};
 };
     class TowerSearchView : public View                                // App class declaration

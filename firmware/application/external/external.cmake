@@ -375,6 +375,10 @@ set(EXTCPPSRC
 	external/secplustx/main.cpp
 	external/secplustx/ui_secplustx.cpp
 	external/secplustx/secplustx.cpp
+
+	# tower_search
+	external/tower_search/main.cpp
+	external/tower_search/tower_search.cpp
 )
 
 set(EXTAPPLIST
@@ -467,6 +471,7 @@ set(EXTAPPLIST
 	two_tone_rx
 	hard_reset
 	secplustx
+	tower_search
 )
 
 # sdusb has type conflicts with PRALINE (HackRF Pro) - add only for non-PRALINE builds
