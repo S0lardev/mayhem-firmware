@@ -7,8 +7,15 @@
 //log
 #include "log_file.hpp"
 
-namespace ui
-{
+namespace ui;
+
+namespace ui::external_app::tower_search {
+    #define PROGRESS_MAX 100
+    #define OOK_SAMPLERATE_DEFAULT 2280000U // Set the default Sample Rate
+    #define RECEIVE_FREQUENCY_DEFAULT 433920000U   // Sets the default receive frequency (27 MHz).
+    #define WAVEFORM_BUFFER_SIZE 550
+   
+   
     // TODO: replace with a proper class in ui_receiver.hpp
     struct TowerSearchRecentEntry {
     using Key = uint64_t;
@@ -17,6 +24,7 @@ namespace ui
     uint16_t bits = 0;
     uint16_t age = 0;  // updated on each seconds, show how long the signal was last seen
     uint64_t data = 0;
+
     TowerSearchRecentEntry() {}
     TowerSearchRecentEntry(
         uint8_t sensorType,
@@ -57,11 +65,19 @@ namespace ui
     void refresh();
 
     private:
+        
+        unit32_t progress = 0;
+        bool logging = false;
+        bool scanning = false;
+        bool umts_enabled = true;
+        app_settings::SettingsManager settings_{"rx_tower_search", app_settings::Mode::RX, {{"log"sv, &logging},}};  // App settings manager
+        nrTowerLog logging{};
         void start_scan_thread();
         void stop_scan_thread();
         void on_data(const SubGhzDDataMessage* data);
 
-        void update();                                            // Function declaration
+        void update();                                            // update the view
+
         MessageHandlerRegistration message_handler_update{        // Example, not required: MessageHandlerRegistration class
             Message::ID::DisplayFrameSync,                        // relays messages to your app code from baseband. Every time you 
             [this](const Message *const) {                        // get a  DisplayFrameSync message the update() function will
@@ -74,27 +90,22 @@ namespace ui
         {}};
 
     ui::NavigationView& nav_;
+        recentEntries<TowerSearchRecentEntry> recent{};
 
-    ui::RFAmpField field_rf_amp{
-        {UI_POS_X(8), UI_POS_Y(0)}};
-
-    ui::LNAGainField field_lna{
-        {UI_POS_X(10), UI_POS_Y(0)}};
-
-    ui::VGAGainField field_vga{
-        {UI_POS_X(13), UI_POS_Y(0)}};
-
-    ui::RSSI rssi{
-        {UI_POS_X(16), UI_POS_Y(0), UI_POS_WIDTH_REMAINING(22), 4}};
-
-    ui::Channel channel{
-        {UI_POS_X(16), UI_POS_Y(0) + 5, UI_POS_WIDTH_REMAINING(22), 4}};
-
-    // ui::Audio audio{
-    //     {UI_POS_X(16), UI_POS_Y(0) + 10, UI_POS_WIDTH_REMAINING(22), 4}};
-
-    ui::AudioVolumeField field_volume{
-        {UI_POS_WIDTH_REMAINING(2), UI_POS_Y(0)}};
+         RFAmpField field_rf_amp{
+        {13 * 8, UI_POS_Y(0)}};
+        LNAGainField field_lna{
+        {15 * 8, UI_POS_Y(0)}};
+        VGAGainField field_vga{
+        {18 * 8, UI_POS_Y(0)}};
+        RSSI rssi{
+        {21 * 8, 0, UI_POS_WIDTH_REMAINING(24), 4}};
+        Channel channel{
+        {21 * 8, 5, UI_POS_WIDTH_REMAINING(24), 4},
+        };
+         RxFrequencyField field_frequency{
+        {UI_POS_X(0), UI_POS_Y(0)},
+        nav_};
 
         
     };
@@ -106,13 +117,13 @@ namespace ui
         {10 * 8, 18},
         3,
         "5g",
-        true};
+        false};
 
     Checkbox check_lte{
         {10 * 8, 18 + 8},
         3,
         "4g",
-        true};
+        false};
 
     Checkbox check_umts{
         {10 * 8, 18 + 16},
