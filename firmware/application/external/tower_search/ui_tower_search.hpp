@@ -1,13 +1,19 @@
+#ifndef __UI_TOWER_H__
+#define __UI_TOWER_H__
+
 #include "ui.hpp"
 #include "ui_widget.hpp"
 #include "ui_navigation.hpp"
 #include "ui_receiver.hpp"
 #include "string_format.hpp"
-
+#include "app_settings.hpp"
+#include "recent_entries.hpp"
+#include "ui_freq_field.hpp"
+#include "utility.hpp"
 //log
 #include "log_file.hpp"
 
-namespace ui;
+using namespace ui;
 
 namespace ui::external_app::tower_search {
     #define PROGRESS_MAX 100
@@ -16,7 +22,6 @@ namespace ui::external_app::tower_search {
     #define WAVEFORM_BUFFER_SIZE 550
    
    
-    // TODO: replace with a proper class in ui_receiver.hpp
     struct TowerSearchRecentEntry {
     using Key = uint64_t;
     static constexpr Key invalid_key = 0x0fffffff;
@@ -41,7 +46,8 @@ namespace ui::external_app::tower_search {
     std::string to_csv();
 };
 
-    class nrTowerLog {
+
+    class TowerLogger {
    public:
     Optional<File::Error> append(const std::filesystem::path& filename) {
         return log_file.append(filename);
@@ -56,6 +62,9 @@ namespace ui::external_app::tower_search {
 
     LogFile log_file{};
 };
+
+using TowerSearchRecentEntries = RecentEntries<TowerSearchRecentEntry>;
+using TowerSearchRecentEntriesView = RecentEntriesView<TowerSearchRecentEntries>;
     class TowerSearchView : public View                                // App class declaration
     {
     public:
@@ -71,7 +80,7 @@ namespace ui::external_app::tower_search {
         bool scanning = false;
         bool umts_enabled = true;
         app_settings::SettingsManager settings_{"rx_tower_search", app_settings::Mode::RX, {{"log"sv, &logging},}};  // App settings manager
-        nrTowerLog logging{};
+        TowerLogger logging{};
         void start_scan_thread();
         void stop_scan_thread();
         void on_data(const SubGhzDDataMessage* data);
@@ -90,7 +99,7 @@ namespace ui::external_app::tower_search {
         {}};
 
     ui::NavigationView& nav_;
-        recentEntries<TowerSearchRecentEntry> recent{};
+        RecentEntries<TowerSearchRecentEntry> recent{};
 
          RFAmpField field_rf_amp{
         {13 * 8, UI_POS_Y(0)}};
@@ -103,10 +112,17 @@ namespace ui::external_app::tower_search {
         Channel channel{
         {21 * 8, 5, UI_POS_WIDTH_REMAINING(24), 4},
         };
-         RxFrequencyField field_frequency{
+        
+        RxFrequencyField field_frequency{
         {UI_POS_X(0), UI_POS_Y(0)},
         nav_};
 
+        RecentEntriesColumns columns{{
+        {"Type", 0},
+        {"Bits", 4},
+        {"Age", 3},
+    }};
+    TowerSearchRecentEntriesView recent_entries_view{columns, recent};
         
     };
     Button start_scan{
@@ -133,3 +149,5 @@ namespace ui::external_app::tower_search {
 
     
 } 
+
+#endif /*__UI_TOWER_H__*/
