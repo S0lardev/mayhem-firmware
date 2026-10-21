@@ -24,17 +24,17 @@
 #include "ui_navigation.hpp"
 #include "external_app.hpp"
 
-namespace ui::external_app::ui_new_external_app {
+namespace ui::external_app::tower_search {
 void initialize_app(ui::NavigationView& nav) {
     nav.push<TowerSearchView>();
 }
-}  // namespace ui::external_app::ui_new_external_app
+}  // namespace ui::external_app::tower_search
 
 extern "C" {
 
 __attribute__((section(".external_app.app_ui_new_external_app.application_information"), used)) application_information_t _application_information_ui_new_external_app = {
     /*.memory_location = */ (uint8_t*)0x00000000,
-    /*.externalAppEntry = */ ui::external_app::ui_new_external_app::initialize_app,
+    /*.externalAppEntry = */ ui::external_app::tower_search::initialize_app,
     /*.header_version = */ CURRENT_HEADER_VERSION,
     /*.app_version = */ VERSION_MD5,
     /*.app_name = */ "TowerSearch",
